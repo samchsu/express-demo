@@ -28,6 +28,8 @@ var users = {
 
 exports.create = function(req, res) {
 var newUser = req.body;
+console.log(JSON.stringify(newUser, null, 4))
+// users[user5] = newUser;
 users["user" + newUser.id] = newUser;
 console.log("--->After Post, users:\n" + JSON.stringify(users, null, 4));
 res.end("Post Successfully: \n" + JSON.stringify(newUser, null, 4));
@@ -41,7 +43,15 @@ res.end("All users: \n" + JSON.stringify(users, null, 4));
 exports.findOne = function(req, res) {
 var user = users["user" + req.params.id];
 console.log("--->Find user: \n" + JSON.stringify(user, null, 4));
-res.end( "Find a User:\n" + JSON.stringify(user, null, 4));
+if (JSON.stringify(user, null, 4) === undefined)
+    res.end( "User does not exist. Please try another.");
+else
+    res.end( "Find a User:\n" + JSON.stringify(user, null, 4));
+};
+
+exports.findNum = function(req, res) {
+    console.log("Total number of users: " + Object.keys(users).length);
+    res.json({ numOfUsers: Object.keys(users).length });
 };
 
 exports.update = function(req, res) {
