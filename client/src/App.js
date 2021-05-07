@@ -1,10 +1,14 @@
 import './App.css';
 import Button from "react-bootstrap/Button";
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 function App() {
   let textInput = React.createRef();
   const [apiResponse, setApiResponse] = useState("")
+  const firstName = useRef(null);
+  const lastName = useRef(null);
+  const age = useRef(null);
+
   
   function CallAPI() {
     fetch("http://localhost:8000/demo/users")
@@ -38,19 +42,22 @@ function App() {
     fetch("http://localhost:8000/demo/users/total")
     .then(res => res.json())
     .then(res => {
-      console.log(res.numOfUsers)
+      console.log(firstName.current.value);
+      console.log(lastName.current.value);
+      console.log(age.current.value);
+      var integerId = parseInt(res.numOfUsers);
+      integerId += 1;
       fetch("http://localhost:8000/demo/users", {
         method: "POST",
-        header: {
-          'Accept': 'application/json', 
+        headers: {
           "Content-Type": "application/json" 
         },
-        body: {
-          firstName: "Bill",
-          lastName: "G.I.",
-          age: "24",
-          id: res.numOfUsers
-        }
+        body: JSON.stringify({
+          "firstname": firstName.current.value,
+          "lastname": lastName.current.value,
+          "age": age.current.value,
+          "id": integerId,
+        })
       })
       .then(res => res.text())
       .then(res => setApiResponse(res))
@@ -79,11 +86,22 @@ function App() {
 
   return (
     <div>
-      <input ref={textInput} placeholder="Type a message..." />
+      <input ref={textInput} placeholder="Search for User by ID..." />
       <Button className="icon" onClick={handleSubmit}> Submit </Button>
+      <Button variant="link" className="admin-back-btn" onClick={DeleteItem}>Delete User</Button>
       <Button className="icon" onClick={handleSubmitAll}> Show All </Button>
-      <Button className="icon" onClick={handleCreate}> Create </Button>
-      <Button variant="link" className="admin-back-btn" onClick={DeleteItem}>Delete</Button>
+      <br/><br/>
+      <form onSubmit = {handleCreate}>
+        <label>
+          First Name:
+          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstName}/>
+          Last Name:
+          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastName}/>
+          Age:
+          <input type="text" placeholder="Enter Age..." name="age" ref={age}/>
+        </label>
+        <button>Submit</button>
+      </form>
         <br/>
           {apiResponse}
       </div>

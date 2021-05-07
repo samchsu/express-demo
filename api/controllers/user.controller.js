@@ -27,8 +27,8 @@ var users = {
 }
 
 exports.create = function(req, res) {
+    console.log(req.body)
 var newUser = req.body;
-console.log(JSON.stringify(newUser, null, 4))
 // users[user5] = newUser;
 users["user" + newUser.id] = newUser;
 console.log("--->After Post, users:\n" + JSON.stringify(users, null, 4));
@@ -51,7 +51,7 @@ else
 
 exports.findNum = function(req, res) {
     console.log("Total number of users: " + Object.keys(users).length);
-    res.json({ numOfUsers: Object.keys(users).length });
+    res.send({ numOfUsers: Object.keys(users).length });
 };
 
 exports.update = function(req, res) {
