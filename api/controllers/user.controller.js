@@ -50,23 +50,46 @@ else
 };
 
 exports.findNum = function(req, res) {
-    console.log("Total number of users: " + Object.keys(users).length);
-    res.send({ numOfUsers: Object.keys(users).length });
+    var checker = 0;
+    for (let i = 0; i < Object.keys(users).length; i++)
+    {
+        if (JSON.stringify(users["user" + (i+1)], null, 4) === undefined)
+        {
+            console.log("Current Number: " + i);
+            res.send({ numOfUsers: i });
+            checker = 1;
+            return;
+        }
+    }
+    console.log(checker)
+    if (checker === 0)
+    {
+        console.log("Total number of users: " + Object.keys(users).length);
+        res.send({ numOfUsers: Object.keys(users).length });
+    }
 };
 
 exports.update = function(req, res) {
 var id = parseInt(req.params.id);
 var updatedUser = req.body; 
-if(users["user" + id] != null){
-// update data
-users["user" + id] = updatedUser;
+if(users["user" + id] != null)
+{
+    // update data
+    if (updatedUser.firstname.length > 0)
+        users["user" + id].firstname = updatedUser.firstname;
+    if (updatedUser.lastname.length > 0)
+        users["user" + id].lastname = updatedUser.lastname;
+    if (updatedUser.age.length > 0)
+        users["user" + id].age = updatedUser.age;
 
-console.log("--->Update Successfully, users: \n" + JSON.stringify(users, null, 4))
+    console.log("--->Update Successfully, users: \n" + JSON.stringify(users, null, 4))
 
-// return
-res.end("Update Successfully! \n" + JSON.stringify(updatedUser, null, 4));
-}else{
-res.end("User doesn't exist:\n:" + JSON.stringify(updatedUser, null, 4));
+    // return
+    res.end("Update Successfully! \n" + JSON.stringify(updatedUser, null, 4));
+}
+else
+{
+    res.end("User doesn't exist:\n:" + JSON.stringify(updatedUser, null, 4));
 }
 };
 

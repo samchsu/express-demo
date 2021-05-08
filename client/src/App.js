@@ -2,13 +2,18 @@ import './App.css';
 import Button from "react-bootstrap/Button";
 import React, {useState, useEffect, useRef} from 'react';
 
+// Could support batch operations in the future
 function App() {
   let textInput = React.createRef();
   const [apiResponse, setApiResponse] = useState("")
-  const firstName = useRef(null);
-  const lastName = useRef(null);
-  const age = useRef(null);
-  const id = useRef(null);
+  const firstNameCreate = useRef(null);
+  const lastNameCreate = useRef(null);
+  const ageCreate = useRef(null);
+  const idCreate = useRef(null);
+  const firstNameEdit = useRef(null);
+  const lastNameEdit = useRef(null);
+  const ageEdit = useRef(null);
+  const idEdit = useRef(null);
 
   
   function CallAPI() {
@@ -43,20 +48,18 @@ function App() {
     fetch("http://localhost:8000/demo/users/total")
     .then(res => res.json())
     .then(res => {
-      console.log(firstName.current.value);
-      console.log(lastName.current.value);
-      console.log(age.current.value);
       var integerId = parseInt(res.numOfUsers);
       integerId += 1;
+      console.log(integerId)
       fetch("http://localhost:8000/demo/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json" 
         },
         body: JSON.stringify({
-          "firstname": firstName.current.value,
-          "lastname": lastName.current.value,
-          "age": age.current.value,
+          "firstname": firstNameCreate.current.value,
+          "lastname": lastNameCreate.current.value,
+          "age": ageCreate.current.value,
           "id": integerId,
         })
       })
@@ -69,17 +72,17 @@ function App() {
   const handleEdit = event => {
     event.preventDefault();
     console.log(textInput.current.value);
-    var url = "http://localhost:8000/demo/users/" + id.current.value;
+    var url = "http://localhost:8000/demo/users/" + idEdit.current.value;
     fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "firstname": firstName.current.value,
-        "lastname": lastName.current.value,
-        "age": age.current.value,
-        "id": id.current.value
+        "firstname": firstNameEdit.current.value,
+        "lastname": lastNameEdit.current.value,
+        "age": ageEdit.current.value,
+        "id": idEdit.current.value
       })
     })
     .then(res => res.text())
@@ -121,11 +124,11 @@ function App() {
           <b> Create New User: </b>
           <br/>
           First Name:
-          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstName}/>
+          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstNameCreate}/>
           Last Name:
-          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastName}/>
+          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastNameCreate}/>
           Age:
-          <input type="text" placeholder="Enter Age..." name="age" ref={age}/>
+          <input type="text" placeholder="Enter Age..." name="age" ref={ageCreate}/>
         </label>
         <button>Submit</button>
       </form>
@@ -135,13 +138,13 @@ function App() {
           <b> Edit Pre-existing User: </b>
           <br/>
           First Name:
-          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstName}/>
+          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstNameEdit}/>
           Last Name:
-          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastName}/>
+          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastNameEdit}/>
           Age:
-          <input type="text" placeholder="Enter Age..." name="age" ref={age}/>
+          <input type="text" placeholder="Enter Age..." name="age" ref={ageEdit}/>
           Id:
-          <input type="text" placeholder="Enter ID..." name="id" ref={id}/>
+          <input type="text" placeholder="Enter ID..." name="id" ref={idEdit}/>
         </label>
         <button>Submit</button>
       </form>
