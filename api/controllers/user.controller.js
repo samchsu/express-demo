@@ -44,7 +44,7 @@ exports.findOne = function(req, res) {
 var user = users["user" + req.params.id];
 console.log("--->Find user: \n" + JSON.stringify(user, null, 4));
 if (JSON.stringify(user, null, 4) === undefined)
-    res.end( "User does not exist. Please try another.");
+    res.end( "User with ID #" + req.params.id + " does not exist. Please try another.");
 else
     res.end( "Find a User:\n" + JSON.stringify(user, null, 4));
 };
@@ -72,7 +72,12 @@ res.end("User doesn't exist:\n:" + JSON.stringify(updatedUser, null, 4));
 
 exports.delete = function(req, res) {
 var deleteUser = users["user" + req.params.id];
-delete users["user" + req.params.id];
-console.log("--->After deletion, user list:\n" + JSON.stringify(users, null, 4) );
-res.end( "Deleted user: \n" + JSON.stringify(deleteUser, null, 4));
+    if (JSON.stringify(deleteUser, null, 4) === undefined)
+        res.end( "User with ID #" + req.params.id + " does not exist. Please try another to delete.");
+    else
+    {
+        delete users["user" + req.params.id];
+        console.log("--->After deletion, user list:\n" + JSON.stringify(users, null, 4) );
+        res.end( "Deleted user: \n" + JSON.stringify(deleteUser, null, 4));
+    }
 };

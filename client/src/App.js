@@ -8,6 +8,7 @@ function App() {
   const firstName = useRef(null);
   const lastName = useRef(null);
   const age = useRef(null);
+  const id = useRef(null);
 
   
   function CallAPI() {
@@ -65,6 +66,26 @@ function App() {
     })
   };
 
+  const handleEdit = event => {
+    event.preventDefault();
+    console.log(textInput.current.value);
+    var url = "http://localhost:8000/demo/users/" + id.current.value;
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "firstname": firstName.current.value,
+        "lastname": lastName.current.value,
+        "age": age.current.value,
+        "id": id.current.value
+      })
+    })
+    .then(res => res.text())
+    .then(res => setApiResponse(res))
+    .catch(err => err);
+  };
 
   function DeleteItem() {
     var url = "http://localhost:8000/demo/users/" + textInput.current.value;
@@ -86,13 +107,19 @@ function App() {
 
   return (
     <div>
+      <br/>
+          <b> Search for Pre-existing User: </b>
+        <br/>
       <input ref={textInput} placeholder="Search for User by ID..." />
       <Button className="icon" onClick={handleSubmit}> Submit </Button>
       <Button variant="link" className="admin-back-btn" onClick={DeleteItem}>Delete User</Button>
       <Button className="icon" onClick={handleSubmitAll}> Show All </Button>
-      <br/><br/>
+      <br/>
       <form onSubmit = {handleCreate}>
         <label>
+          <br/>
+          <b> Create New User: </b>
+          <br/>
           First Name:
           <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstName}/>
           Last Name:
@@ -102,7 +129,25 @@ function App() {
         </label>
         <button>Submit</button>
       </form>
+      <form onSubmit = {handleEdit}>
+        <label >
+          <br/>
+          <b> Edit Pre-existing User: </b>
+          <br/>
+          First Name:
+          <input type="text" placeholder="Enter First Name..." name="firstname" ref={firstName}/>
+          Last Name:
+          <input type="text" placeholder="Enter Last Name..." name="lastname" ref={lastName}/>
+          Age:
+          <input type="text" placeholder="Enter Age..." name="age" ref={age}/>
+          Id:
+          <input type="text" placeholder="Enter ID..." name="id" ref={id}/>
+        </label>
+        <button>Submit</button>
+      </form>
         <br/>
+        <b> Pre-existing Users: </b>
+          <br/>
           {apiResponse}
       </div>
   );
